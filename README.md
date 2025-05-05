@@ -9,7 +9,7 @@ ini adalah Repository yang kami gunakan untuk mengumpulkan Tugas 3 pada Mata Kul
    
 # Anggota Kelompok 1:
 - Haniel Septian Putra Alren (2310978)
-- Muhammad Radhi Maulana     (2310850)
+- Muhammad Radhi Maulana     (2311119)
 - Muhammad Fathan Putra      (2300330)
 - Naufal Fakhri Al-Najieb    (2309648)
 - Yoga Ilham Prasetio        (2304539)
