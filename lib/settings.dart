@@ -68,7 +68,6 @@ class SettingsPage extends StatelessWidget {
                     _buildSettingItem('Ubah Nama'),
                     _buildSettingItem('Ubah Nomor Telepon'),
                     _buildSettingItem('Ubah Password'),
-                    _buildSettingItem('Atur Alamat'),
                     _buildSettingItem('Atur No. KTP'),
                   ],
                 ),

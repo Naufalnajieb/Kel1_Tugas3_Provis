@@ -54,6 +54,15 @@ class RegisterPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   TextFormField(
                     decoration: const InputDecoration(
+                      labelText: 'No. KTP',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    decoration: const InputDecoration(
                       labelText: 'No. HP',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
