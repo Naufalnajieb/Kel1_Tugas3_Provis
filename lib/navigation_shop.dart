@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'navbar.dart';
 import 'navigation.dart';
+import 'shop_detail.dart';
 
 class NavigationShopPage extends StatelessWidget {
   const NavigationShopPage({super.key});
@@ -98,7 +99,16 @@ class NavigationShopPage extends StatelessWidget {
               itemCount: rentalStores.length,
               itemBuilder: (context, index) {
                 final store = rentalStores[index];
-                return Padding(
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShopDetail(store: store,),
+                        ),
+                      );
+                  },
+                  child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Card(
                     elevation: 2,
@@ -142,6 +152,7 @@ class NavigationShopPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
                 );
               },
             ),
