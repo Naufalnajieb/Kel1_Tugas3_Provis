@@ -3,13 +3,11 @@ import 'success_payment.dart';
 
 
 class PaymentPage extends StatefulWidget {
-  final Map<String, String> product;
-  final int jumlahStok;
+  final Object? product;
 
   const PaymentPage({
     Key? key,
     required this.product,
-    required this.jumlahStok,
   }) : super(key: key);
 
   @override
@@ -28,18 +26,70 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    int price = 0;
-    if (widget.product.containsKey('price')) {
-      String rawPrice = widget.product['price']!.replaceAll(RegExp(r'[^0-9]'), '');
-      if (rawPrice.isNotEmpty) {
-        price = int.tryParse(rawPrice) ?? 0;
+    List<Widget> productCards = [];
+    print(widget.product.runtimeType);
+
+    if (widget.product is Map<String, dynamic>) {
+      final product = widget.product as Map<String, dynamic>;
+      productCards.add(buildProductCard(product, product["stok"]));
+    } else if (widget.product is List<Map<String, dynamic>>) {
+      print("halo");
+      final products = widget.product as List<Map<String, dynamic>>;
+      for (var product in products) {
+        print("satusatu");
+        print(product["product"]);
+        productCards.add(buildProductCard(product["product"], 1)); // 1 stok per item
       }
     }
 
+    int price = 0;
+
+    // Cek jika product adalah Map
+    if (widget.product is Map<String, dynamic>) {
+      final productMap = widget.product as Map<String, dynamic>;
+      final priceStr = productMap['price'];
+      if (priceStr != null) {
+        final rawPrice = priceStr.replaceAll(RegExp(r'[^0-9]'), '');
+        if (rawPrice.isNotEmpty) {
+          price = int.tryParse(rawPrice) ?? 0;
+        }
+      }
+    }
+
+    // Cek jika product adalah List<Map>
+    else if (widget.product is List<Map<String, dynamic>>) {
+      final productList = widget.product as List<Map<String, dynamic>>;
+      for (var product in productList) {
+        final priceStr = product['price'];
+        if (priceStr != null) {
+          final rawPrice = priceStr.replaceAll(RegExp(r'[^0-9]'), '');
+          if (rawPrice.isNotEmpty) {
+            price += int.tryParse(rawPrice) ?? 0;
+          }
+        }
+      }
+    }
+
+
+
     const int appFee = 2000;
     int shippingFee = useShipping ? 10000 : 0; // contoh biaya pengiriman
-    int total = (price * widget.jumlahStok) + appFee + shippingFee;
+    int total = 0;
+    if (widget.product is Map<String, dynamic>) {
+      final productMap = widget.product as Map<String, dynamic>;
+      final stok = productMap["stok"] as int? ?? 1;
+      total = (price * stok) + appFee + shippingFee;
+    } else {
+      total = price + appFee + shippingFee;
+    }
 
+    int stok = 1;
+    if (widget.product is Map<String, dynamic>) {
+      final productMap = widget.product as Map<String, dynamic>;
+      stok = productMap["stok"] as int? ?? 1;
+    }
+
+    print(productCards);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,49 +109,7 @@ class _PaymentPageState extends State<PaymentPage> {
         padding: const EdgeInsets.all(12),
         child: ListView(
           children: [
-            // Kartu Produk
-            Card(
-              color: Colors.grey[100],
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Image.asset(
-                        widget.product['image']!,
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.product.containsKey('name') ? widget.product['name']! : 'Produk',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          const SizedBox(height: 4),
-                          buildProductInfo("Kategori", widget.product['category']),
-                          buildProductInfo("Lokasi", widget.product['location']),
-                          buildProductInfo("Harga", widget.product['price']),
-                          buildProductInfo("Jumlah Disewa", widget.jumlahStok.toString()),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+            ...productCards,
 
             const SizedBox(height: 16),
 
@@ -288,7 +296,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   children: [
                     const Text("Detail Tagihan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 8),
-                    buildDetailRow("Biaya Produk (${widget.jumlahStok})", price * widget.jumlahStok),
+                    buildDetailRow("Biaya Produk (${stok})", price * stok),
                     buildDetailRow("Biaya Pengiriman", shippingFee),
                     buildDetailRow("Biaya Jasa Aplikasi", appFee),
                     const Divider(),
@@ -315,13 +323,26 @@ class _PaymentPageState extends State<PaymentPage> {
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text("Konfirmasi pembayaran"),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SuccessPaymentPage(),
-                    ),
+                if (selectedPayment == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Pilih metode pembayaran terlebih dahulu.")),
                   );
-                },
+                  return;
+                }
+
+                if (useShipping && selectedCourier == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Pilih jasa pengiriman terlebih dahulu.")),
+                  );
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SuccessPaymentPage()),
+                );
+              },
+
 
               ),
             ),
@@ -330,6 +351,51 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
     );
   }
+
+Widget buildProductCard(Map<String, dynamic> product, int jumlah) {
+  return Card(
+    color: Colors.grey[100],
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 3,
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Image.asset(
+              product['image'] ?? 'assets/images/default.png',
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product['name'] ?? 'Produk',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 4),
+                buildProductInfo("Kategori", product['category']),
+                buildProductInfo("Lokasi", product['location']),
+                buildProductInfo("Harga", product['price']),
+                buildProductInfo("Jumlah Disewa", jumlah.toString()),
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
 
   Widget buildProductInfo(String label, String? value) {
     String textValue = "-";
@@ -403,3 +469,4 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 }
+

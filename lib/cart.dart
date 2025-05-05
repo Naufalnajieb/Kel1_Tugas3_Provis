@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'payment.dart';
 
 class CartPage extends StatefulWidget {
-  final List<Map<String, String>> selectedProducts;
+  final List<Map<String, dynamic>> selectedProducts;
 
   const CartPage({super.key, required this.selectedProducts});
 
@@ -183,9 +183,21 @@ class _CartPageState extends State<CartPage> {
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
           onPressed: () {
+            List<Map<String, dynamic>> checkoutData = [];
+
+            for (int i = 0; i < widget.selectedProducts.length; i++) {
+              checkoutData.add({
+                'product': widget.selectedProducts[i],
+                'startDate': startDates[i],
+                'endDate': endDates[i],
+                'quantity': quantities[i],
+              });
+            }
+            print(checkoutData);  
+
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const PaymentPage()),
+              MaterialPageRoute(builder: (_) => PaymentPage(product: checkoutData)),
             );
           },
           style: ElevatedButton.styleFrom(

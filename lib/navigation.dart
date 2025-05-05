@@ -12,11 +12,11 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  List<Map<String, String>> cartItems = [];
+  List<Map<String, dynamic>> cartItems = [];
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> products = [
+    List<Map<String, dynamic>> products = [
       {
         'name': 'Tenda Biru',
         'category': 'Tenda',

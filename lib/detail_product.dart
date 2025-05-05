@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'payment.dart';
 
 class DetailProductPage extends StatefulWidget {
-  final Map<String, String> product;
+  final Map<String, dynamic> product;
 
   const DetailProductPage({Key? key, required this.product}) : super(key: key);
 
@@ -15,6 +15,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
   DateTime? _tanggalSewa;
   DateTime? _tanggalPengembalian;
   int _jumlahStok = 2;
+  
 
   
   int _currentReviewIndex = 0;
@@ -173,6 +174,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
+    product["stok"] = _jumlahStok.toString();
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -406,12 +408,12 @@ class _DetailProductPageState extends State<DetailProductPage> {
         child: ElevatedButton(
           onPressed: () {
             if (_tanggalSewa != null && _tanggalPengembalian != null) {
+              product["stok"] = _jumlahStok;
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PaymentPage(
                     product: widget.product,
-                    jumlahStok: _jumlahStok,
                   ),
                 ),
               );
