@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'landing.dart';
 import 'navigation.dart';
-import 'booking_status.dart';
+import 'show_booking.dart';
 import 'settings.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -23,7 +23,7 @@ class CustomBottomNavBar extends StatelessWidget {
     page = const NavigationPage();
   }
   else if (index == 2){
-    page = const BookingStatusPage();
+    page = const ShowBookingPage();
   }
   else if (index == 3){
     page = const SettingsPage();
