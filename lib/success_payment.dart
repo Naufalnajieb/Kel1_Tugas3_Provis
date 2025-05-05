@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'show_booking.dart';
 
 class SuccessPaymentPage extends StatelessWidget {
   const SuccessPaymentPage({Key? key}) : super(key: key);
@@ -54,12 +55,11 @@ class SuccessPaymentPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              ElevatedButton.icon(
+                ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00FFAB),
                   foregroundColor: Colors.black,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -72,7 +72,10 @@ class SuccessPaymentPage extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
-                  // Arahkan ke halaman status booking nanti
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ShowBookingPage()),
+                  );
                 },
               ),
             ],
