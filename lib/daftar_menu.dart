@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'booking_status.dart';
+import 'pengembalian.dart';
 import 'cart.dart';
 import 'detail_product.dart';
 import 'landing.dart'; 
@@ -11,6 +11,7 @@ import 'payment.dart';
 import 'register.dart';
 import 'settings.dart';
 import 'success_payment.dart';
+import 'show_booking.dart';
 
 class DaftarMenu extends StatelessWidget {
   @override
@@ -26,10 +27,19 @@ class DaftarMenu extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BookingStatusPage()),
+                    MaterialPageRoute(builder: (context) => PengembalianPage()),
                   );
                 },
-                child: Text("Go to Booking Status"),
+                child: Text("Go to Pengembalian"),
+              ),
+               ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ShowBookingPage()),
+                  );
+                },
+                child: Text("Go to Show Booking"),
               ),
               ElevatedButton(
                 onPressed: () {
